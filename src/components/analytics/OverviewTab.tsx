@@ -7,6 +7,11 @@ interface OverviewTabProps {
   filters: any;
 }
 
+interface HeatmapData {
+  topic: string;
+  [studentName: string]: string | number;
+}
+
 export const OverviewTab = ({ filters }: OverviewTabProps) => {
   // Mock data
   const kpiData = [
@@ -27,7 +32,7 @@ export const OverviewTab = ({ filters }: OverviewTabProps) => {
     { week: 'Week 6', score: 82 },
   ];
 
-  const heatmapData = [
+  const heatmapData: HeatmapData[] = [
     { topic: 'Algebra', 'Sarah Chen': 95, 'Mike Johnson': 87, 'Emma Davis': 92, 'Alex Kim': 89, 'Lisa Wang': 94 },
     { topic: 'Geometry', 'Sarah Chen': 93, 'Mike Johnson': 78, 'Emma Davis': 85, 'Alex Kim': 91, 'Lisa Wang': 88 },
     { topic: 'Calculus', 'Sarah Chen': 96, 'Mike Johnson': 72, 'Emma Davis': 79, 'Alex Kim': 83, 'Lisa Wang': 90 },
@@ -115,19 +120,22 @@ export const OverviewTab = ({ filters }: OverviewTabProps) => {
                 <div key={topicIndex} className="space-y-2">
                   <h4 className="font-medium text-charcoal">{topic.topic}</h4>
                   <div className="flex space-x-2">
-                    {Object.entries(topic).filter(([key]) => key !== 'topic').map(([student, score], studentIndex) => (
-                      <div
-                        key={studentIndex}
-                        className={`flex-1 p-3 rounded-lg text-center text-sm font-medium ${
-                          score >= 90 ? 'bg-green-100 text-green-800' :
-                          score >= 80 ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-red-100 text-red-800'
-                        }`}
-                      >
-                        <div className="truncate text-xs mb-1">{student}</div>
-                        <div>{score}%</div>
-                      </div>
-                    ))}
+                    {Object.entries(topic).filter(([key]) => key !== 'topic').map(([student, score], studentIndex) => {
+                      const numericScore = typeof score === 'number' ? score : parseInt(score as string, 10);
+                      return (
+                        <div
+                          key={studentIndex}
+                          className={`flex-1 p-3 rounded-lg text-center text-sm font-medium ${
+                            numericScore >= 90 ? 'bg-green-100 text-green-800' :
+                            numericScore >= 80 ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-red-100 text-red-800'
+                          }`}
+                        >
+                          <div className="truncate text-xs mb-1">{student}</div>
+                          <div>{numericScore}%</div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               ))}

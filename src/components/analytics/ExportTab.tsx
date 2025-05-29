@@ -13,6 +13,12 @@ interface ExportTabProps {
   filters: any;
 }
 
+interface Metric {
+  id: string;
+  label: string;
+  category: string;
+}
+
 export const ExportTab = ({ filters }: ExportTabProps) => {
   const [selectedMetrics, setSelectedMetrics] = useState([
     'avgScore', 'completion', 'timeSpent', 'sessions'
@@ -22,7 +28,7 @@ export const ExportTab = ({ filters }: ExportTabProps) => {
   const [scheduleFrequency, setScheduleFrequency] = useState('weekly');
   const [recipientEmail, setRecipientEmail] = useState('');
 
-  const availableMetrics = [
+  const availableMetrics: Metric[] = [
     { id: 'avgScore', label: 'Average Score', category: 'Performance' },
     { id: 'completion', label: 'Completion Rate', category: 'Performance' },
     { id: 'timeSpent', label: 'Time Spent', category: 'Engagement' },
@@ -43,13 +49,13 @@ export const ExportTab = ({ filters }: ExportTabProps) => {
     );
   };
 
-  const groupedMetrics = availableMetrics.reduce((acc, metric) => {
+  const groupedMetrics: Record<string, Metric[]> = availableMetrics.reduce((acc, metric) => {
     if (!acc[metric.category]) {
       acc[metric.category] = [];
     }
     acc[metric.category].push(metric);
     return acc;
-  }, {});
+  }, {} as Record<string, Metric[]>);
 
   const exportFormats = [
     { id: 'csv', label: 'CSV', icon: FileSpreadsheet, description: 'Comma-separated values for Excel' },
